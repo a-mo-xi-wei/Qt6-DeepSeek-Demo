@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>566</width>
-    <height>438</height>
+    <height>464</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -28,15 +28,15 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="8,1,2">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="8,1,1">
    <item>
-    <widget class="QTextEdit" name="answer_textEdit"/>
+    <widget class="ChatView" name="widget" native="true"/>
    </item>
    <item>
     <widget class="QTextEdit" name="question_textEdit"/>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="send_btn">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -50,6 +50,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ChatView</class>
+   <extends>QWidget</extends>
+   <header>ChatView.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

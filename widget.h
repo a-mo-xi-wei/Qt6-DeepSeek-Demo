@@ -1,9 +1,8 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include <QWidget>
 #include "Chat.h"
-
+#include "TextBubble.h"
 #include <QTimer>
 
 QT_BEGIN_NAMESPACE
@@ -23,9 +22,9 @@ public:
     ~Widget();
 
 private slots:
-    void on_pushButton_clicked();
+    void on_send_btn_clicked();
 
-    void getAnswer(const QString &word) const;
+    void getAnswer(const QString &word);
 
     void onStreamFinished();
 
@@ -33,6 +32,8 @@ private:
     Ui::Widget *ui;
     Chat m_deepSeek;
 
-    QString m_fullAnswer;  // 新增：累积完整回答
+    /*--------------------*/
+    QTimer m_streamUpdateTimer; // 流式更新定时器
+    QString m_pendingContent;  // 待显示内容缓冲
 };
 #endif // WIDGET_H
