@@ -8,23 +8,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(SOURCES
-    src/main.cpp
-    src/widget.cpp
-        src/Chat.cpp
-    src/widget.ui
-)
+file(GLOB SOURCES_CPP ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+file(GLOB HEADS_H ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 
-set(HEADS
-    include/widget.h
-        include/Chat.h
-)
+add_executable(${PROJECT_NAME} ${SOURCES_CPP} ${HEADS_H})
 
-#加载头文件到环境中
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_executable(deepSeek ${SOURCES} ${HEADS})
-
-target_link_libraries(deepSeek Qt6::Widgets Qt6::Network)
+target_link_libraries(${PROJECT_NAME} Qt6::Widgets Qt6::Network)
