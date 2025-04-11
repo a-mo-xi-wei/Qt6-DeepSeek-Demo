@@ -28,7 +28,6 @@ Widget::Widget(QWidget *parent)
         QScrollBar:vertical:hover {
             border: 1px solid rgb(231,166,190);
             border-radius:4px;
-            background-color: rgb(231,166,190);
             width: 10px;
             margin: 20px 0px 20px 0px;
         }
