@@ -2,7 +2,7 @@
 #define WIDGET_H
 
 #include "Chat.h"
-#include "TextBubble.h"
+#include <QWidget>
 #include <QTimer>
 
 QT_BEGIN_NAMESPACE
@@ -21,6 +21,9 @@ public:
 
     ~Widget();
 
+private:
+    QPixmap getRoundedPixmap(const QPixmap &src, const QSize &size, const int &radius);
+
 private slots:
     void on_send_btn_clicked();
 
@@ -34,6 +37,6 @@ private:
 
     /*--------------------*/
     QTimer m_streamUpdateTimer; // 流式更新定时器
-    QString m_pendingContent;  // 待显示内容缓冲
+    QString m_pendingContent; // 待显示内容缓冲
 };
 #endif // WIDGET_H

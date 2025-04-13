@@ -1,9 +1,13 @@
 #include "widget.h"
 #include "ui_widget.h"
+#include "TextBubble.h"
+#include "ChatItemBase.h"
 
-#include <QScrollBar>
 #include <QMouseEvent>
 #include <QFile>
+#include <qfontdatabase.h>
+#include <QPainter>
+#include <QPainterPath>
 
 #define GET_CURRENT_DIR (QString(__FILE__).first(qMax(QString(__FILE__).lastIndexOf('/'), QString(__FILE__).lastIndexOf('\\'))))
 
@@ -18,6 +22,16 @@ Widget::Widget(QWidget *parent)
     } else {
         qDebug() << "样式表打开失败QAQ";
         return;
+    }
+    int id = QFontDatabase::addApplicationFont(GET_CURRENT_DIR + QStringLiteral("/dialog.ttf"));
+    if (id != -1) {
+        QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+        QFont font(family);
+        font.setPointSize(12);
+        // 可选：设置为全局字体
+        QApplication::setFont(font);
+    } else {
+        qDebug() << "Failed to load font.";
     }
     // 连接信号
     connect(&m_deepSeek, &Chat::answered, this, &Widget::getAnswer);
@@ -34,17 +48,41 @@ Widget::~Widget()
 
 }
 
+QPixmap Widget::getRoundedPixmap(const QPixmap &src, const QSize &size, const int &radius) {
+    QPixmap scaled = src.scaled(size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+    QPixmap dest(size);
+    dest.fill(Qt::transparent);
+
+    QPainter painter(&dest);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QPainterPath path;
+    path.addRoundedRect(0, 0, size.width(), size.height(), radius, radius);
+    painter.setClipPath(path);
+    painter.drawPixmap(0, 0, scaled);
+
+    return dest;
+}
+
 void Widget::on_send_btn_clicked() {
     const QString question = ui->question_textEdit->toPlainText().trimmed();
     if(question.isEmpty()) {
         qWarning() << "Empty question";
         return;
     }
-    ui->send_btn->setEnabled(false);
-    ui->send_btn->setCursor(Qt::ForbiddenCursor);
-
+    //ui->send_btn->setEnabled(false);
+    //ui->send_btn->setCursor(Qt::ForbiddenCursor);
+    auto pChatItem = new ChatItemBase(ChatRole::Self);
+    pChatItem->setUserName("我");
+    pChatItem->setUserIcon(getRoundedPixmap(QPixmap(GET_CURRENT_DIR + QStringLiteral("/me.jpg")),{50,50},25));
+    QWidget *pBubble = nullptr;
+    pBubble = new TextBubble(ChatRole::Self, question);
+    if(pBubble != nullptr)
+    {
+        pChatItem->setWidget(pBubble);
+        ui->chatView->appendChatItem(pChatItem);
+    }
     // 发送请求
-    m_deepSeek.send(question);
+    //m_deepSeek.send(question);
     ui->question_textEdit->clear();
 }
 

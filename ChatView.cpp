@@ -45,7 +45,7 @@ ChatView::ChatView(QWidget *parent)
 void ChatView::appendChatItem(QWidget *item)
 {
    auto vl = qobject_cast<QVBoxLayout *>(m_pScrollArea->widget()->layout());
-   qDebug() << "vl->count() is " << vl->count();
+   //qDebug() << "vl->count() is " << vl->count();
    vl->insertWidget(vl->count()-1, item);
    isAppended = true;
 }
@@ -60,8 +60,7 @@ void ChatView::insertChatItem(QWidget *before, QWidget *item)
 
 }
 
-void ChatView::removeAllItem()
-{
+void ChatView::removeAllItem() const {
     auto layout = qobject_cast<QVBoxLayout *>(m_pScrollArea->widget()->layout());
 
    int count = layout->count();

@@ -30,7 +30,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="8,1,1">
    <item>
-    <widget class="ChatView" name="widget" native="true"/>
+    <widget class="ChatView" name="chatView" native="true"/>
    </item>
    <item>
     <widget class="QTextEdit" name="question_textEdit"/>
