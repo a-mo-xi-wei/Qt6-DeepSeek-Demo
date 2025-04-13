@@ -9,14 +9,17 @@ class BubbleFrame : public QFrame {
     Q_OBJECT
 
 public:
-    explicit BubbleFrame(ChatRole role, QWidget *parent = nullptr);
-
-    void setMargin(int margin);
+    explicit BubbleFrame(ChatRole role, const QString &time, QWidget *parent = nullptr);
 
     void setWidget(QWidget *w);
 
+    QString time() {return m_time;}
+
 protected:
     void paintEvent(QPaintEvent *e) override;
+
+protected://给子类继承
+    QString m_time;
 
 private:
     QHBoxLayout *m_pHLayout;

@@ -26,6 +26,8 @@ public:
 private:
     QPixmap getRoundedPixmap(const QPixmap &src, const QSize &size, const int &radius);
 
+    void dealMessageTime(QString curMsgTime);
+
 private slots:
     void on_send_btn_clicked();
 

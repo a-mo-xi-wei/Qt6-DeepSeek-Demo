@@ -1,11 +1,13 @@
 ﻿#include "BubbleFrame.h"
 #include <QPainter>
+#include <QDateTime>
 
 const int WIDTH_SANJIAO  = 8;  //三角宽
 
-BubbleFrame::BubbleFrame(ChatRole role, QWidget *parent)
+BubbleFrame::BubbleFrame(ChatRole role, const QString &time, QWidget *parent)
     :QFrame(parent)
     ,m_role(role)
+    ,m_time(time)
     ,m_margin(3)
 {
     m_pHLayout = new QHBoxLayout(this);
@@ -13,12 +15,6 @@ BubbleFrame::BubbleFrame(ChatRole role, QWidget *parent)
         m_pHLayout->setContentsMargins(m_margin, m_margin, WIDTH_SANJIAO + m_margin, m_margin);
     else
         m_pHLayout->setContentsMargins(WIDTH_SANJIAO + m_margin, m_margin, m_margin, m_margin);
-}
-
-void BubbleFrame::setMargin(int margin)
-{
-    Q_UNUSED(margin);
-    //m_margin = margin;
 }
 
 void BubbleFrame::setWidget(QWidget *w)
@@ -49,7 +45,7 @@ void BubbleFrame::paintEvent(QPaintEvent *e)
         };
         painter.drawPolygon(points, 3);
     }
-    else
+    else if (m_role == ChatRole::Self)
     {
         QColor bk_color(158,234,106);
         painter.setBrush(QBrush(bk_color));
@@ -63,7 +59,27 @@ void BubbleFrame::paintEvent(QPaintEvent *e)
             QPointF(bk_rect.x()+bk_rect.width()+WIDTH_SANJIAO, 10+WIDTH_SANJIAO-WIDTH_SANJIAO/2),
         };
         painter.drawPolygon(points, 3);
+    }
+    else if (m_role == ChatRole::Time) {
+        // 时间标签（灰色居中文字，无气泡）
+        QPen penText;
+        penText.setColor(QColor(153, 153, 153));  // 设置文字颜色为灰色
+        painter.setPen(penText);
 
+        // 设置文字对齐和换行模式
+        QTextOption option(Qt::AlignCenter);
+        option.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+
+        // 设置字体样式
+        QFont te_font = this->font();
+        te_font.setFamily("MicrosoftYaHei");      // 字体
+        te_font.setPointSize(10);                // 字号
+        painter.setFont(te_font);
+
+        // 在控件矩形中央绘制时间文本
+        this->setFixedWidth(150);
+        painter.drawText(this->rect(), QDateTime::currentDateTime().toString(""
+                                                                             "MM/dd HH:mm"), option);
     }
 
     return QFrame::paintEvent(e);

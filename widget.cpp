@@ -65,6 +65,30 @@ QPixmap Widget::getRoundedPixmap(const QPixmap &src, const QSize &size, const in
     return dest;
 }
 
+void Widget::dealMessageTime(QString curMsgTime) {
+    bool isShowTime = false;
+    auto count = ui->chatView->getLayout()->count();
+    qDebug()<<"count: "<<count;
+    if(count > 1) {
+        auto lastWidget = static_cast<TextBubble*>(ui->chatView->getLayout()->itemAt(count - 1)->widget());
+        int lastTime = lastWidget->time().toInt();
+        int curTime = curMsgTime.toInt();
+        //qDebug() << "curTime lastTime:" << curTime - lastTime;
+        isShowTime = (curTime - lastTime) > 5; // 两个消息相差一分钟
+        //        isShowTime = true;
+    } else {
+        isShowTime = true;
+    }
+    if(isShowTime) {
+        auto itemTime = new ChatItemBase(ChatRole::Time);
+        auto messageTime = new TextBubble(ChatRole::Time,"",curMsgTime,ui->chatView);
+        QSize size = QSize(this->width(), 40);
+        messageTime->resize(size);
+        itemTime->setWidget(messageTime);
+        ui->chatView->appendChatItem(itemTime);
+    }
+}
+
 void Widget::on_send_btn_clicked() {
     const QString question = ui->question_textEdit->toPlainText().trimmed();
     if(question.isEmpty()) {
@@ -73,11 +97,14 @@ void Widget::on_send_btn_clicked() {
     }
     ui->send_btn->setEnabled(false);
     ui->send_btn->setCursor(Qt::ForbiddenCursor);
+    //处理时间
+    auto t = QString::number(QDateTime::currentSecsSinceEpoch());
+    dealMessageTime(t);
     // 自己
     auto pChatItem = new ChatItemBase(ChatRole::Self);
     pChatItem->setUserName("我");
     pChatItem->setUserIcon(getRoundedPixmap(QPixmap(GET_CURRENT_DIR + QStringLiteral("/me.jpg")),{50,50},25));
-    auto pBubble = new TextBubble(ChatRole::Self, question);
+    auto pBubble = new TextBubble(ChatRole::Self, question,t);
     pChatItem->setWidget(pBubble);
     ui->chatView->appendChatItem(pChatItem);
     // DeepSeek
@@ -87,7 +114,7 @@ void Widget::on_send_btn_clicked() {
     m_currentResponseItem->setUserIcon(getRoundedPixmap(
         QPixmap(GET_CURRENT_DIR + QStringLiteral("/deepseek.png")).scaled(50,50), {50,50}, 25));
 
-    m_currentResponseBubble = new TextBubble(ChatRole::Other, "");
+    m_currentResponseBubble = new TextBubble(ChatRole::Other, "",t);
     m_currentResponseBubble->startStreaming(); // 启动流式
     m_currentResponseItem->setWidget(m_currentResponseBubble);
 

@@ -44,7 +44,7 @@ ChatView::ChatView(QWidget *parent)
 
 void ChatView::appendChatItem(QWidget *item)
 {
-   auto vl = qobject_cast<QVBoxLayout *>(m_pScrollArea->widget()->layout());
+   auto vl = getLayout();
    //qDebug() << "vl->count() is " << vl->count();
    vl->insertWidget(vl->count()-1, item);
    isAppended = true;
@@ -61,7 +61,7 @@ void ChatView::insertChatItem(QWidget *before, QWidget *item)
 }
 
 void ChatView::removeAllItem() const {
-    auto layout = qobject_cast<QVBoxLayout *>(m_pScrollArea->widget()->layout());
+    auto layout = getLayout();
 
    int count = layout->count();
 
@@ -75,6 +75,19 @@ void ChatView::removeAllItem() const {
         }
     }
 
+}
+
+QVBoxLayout *ChatView::getLayout() const {
+    if (!m_pScrollArea || !m_pScrollArea->widget()) {
+        qWarning() << "ChatView::getLayout(): m_pScrollArea or its widget is null.";
+        return nullptr;
+    }
+
+    auto layout = qobject_cast<QVBoxLayout *>(m_pScrollArea->widget()->layout());
+    if (!layout) {
+        qWarning() << "ChatView::getLayout(): Layout is not a QVBoxLayout.";
+    }
+    return layout;
 }
 
 bool ChatView::eventFilter(QObject *o, QEvent *e)

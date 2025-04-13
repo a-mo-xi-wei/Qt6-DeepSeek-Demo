@@ -10,7 +10,7 @@ class TextBubble : public BubbleFrame {
     Q_OBJECT
 
 public:
-    TextBubble(ChatRole role, const QString &text, QWidget *parent = nullptr);
+    TextBubble(ChatRole role, const QString &text,const QString& time, QWidget *parent = nullptr);
 
     void startStreaming();
 
@@ -18,15 +18,13 @@ public:
 
     void finishStreaming();
 
-protected:
-    bool eventFilter(QObject *o, QEvent *e) override;
-
 private:
     void adjustTextHeight();
 
     void setPlainText(const QString &text);
 
-    void initStyleSheet();
+protected:
+    bool eventFilter(QObject *o, QEvent *e) override;
 
 private:
     QTextEdit *m_pTextEdit;

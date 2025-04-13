@@ -6,18 +6,18 @@
 #include <QTextBlock>
 #include <QTextLayout>
 
-TextBubble::TextBubble(ChatRole role, const QString &text, QWidget *parent)
-    : BubbleFrame(role, parent)
+TextBubble::TextBubble(const ChatRole role, const QString &text, const QString& time, QWidget *parent)
+    : BubbleFrame(role,time, parent)
 {
     m_pTextEdit = new QTextEdit();
     m_pTextEdit->setReadOnly(true);
     m_pTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_pTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_pTextEdit->installEventFilter(this);
+    m_pTextEdit->setStyleSheet("QTextEdit{background:transparent;border:none}");
 
     setPlainText(text);
     setWidget(m_pTextEdit);
-    initStyleSheet();
 }
 
 void TextBubble::startStreaming() {
@@ -116,8 +116,4 @@ void TextBubble::adjustTextHeight() {
     int vMargin = this->layout()->contentsMargins().top();
     //设置这个气泡需要的高度 文本高+文本边距+TextEdit边框到气泡边框的距离
     setFixedHeight(text_height + doc_margin * 2 + vMargin * 2);
-}
-
-void TextBubble::initStyleSheet() {
-    m_pTextEdit->setStyleSheet("QTextEdit{background:transparent;border:none}");
 }

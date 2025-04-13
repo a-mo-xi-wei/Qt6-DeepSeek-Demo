@@ -2,8 +2,9 @@
 #include "BubbleFrame.h"
 
 #include <QFont>
+#include <utility>
 
-ChatItemBase::ChatItemBase(ChatRole role, QWidget *parent)
+ChatItemBase::ChatItemBase(const ChatRole role, QWidget *parent)
     : QWidget(parent)
     , m_role(role)
 {
@@ -32,7 +33,8 @@ ChatItemBase::ChatItemBase(ChatRole role, QWidget *parent)
         pGLayout->addWidget(m_pBubble, 1,1, 1,1);
         pGLayout->setColumnStretch(0, 2);
         pGLayout->setColumnStretch(1, 3);
-    }else{
+    }
+    else if (m_role == ChatRole::Other){
         m_pNameLabel->setContentsMargins(8,0,0,0);
         m_pNameLabel->setAlignment(Qt::AlignLeft);
         pGLayout->addWidget(m_pIconLabel, 0, 0, 2,1, Qt::AlignTop);
@@ -41,6 +43,13 @@ ChatItemBase::ChatItemBase(ChatRole role, QWidget *parent)
         pGLayout->addItem(pSpacer, 2, 2, 1, 1);
         pGLayout->setColumnStretch(1, 3);
         pGLayout->setColumnStretch(2, 2);
+    }
+    else if (m_role == ChatRole::Time) {
+        m_pNameLabel->deleteLater();
+        m_pIconLabel->deleteLater();
+        pGLayout->addItem(pSpacer, 0, 0, 1, 1);
+        pGLayout->addWidget(m_pBubble, 0,1, 1,1,Qt::AlignCenter);
+        pGLayout->addItem(pSpacer, 0, 2, 1, 1);
     }
 }
 
