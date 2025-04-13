@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QTimer>
 
+class TextBubble;
+class ChatItemBase;
 QT_BEGIN_NAMESPACE
 
 namespace Ui {
@@ -36,7 +38,7 @@ private:
     Chat m_deepSeek;
 
     /*--------------------*/
-    QTimer m_streamUpdateTimer; // 流式更新定时器
-    QString m_pendingContent; // 待显示内容缓冲
+    TextBubble* m_currentResponseBubble = nullptr; // 新增：当前正在更新的回答气泡
+    ChatItemBase* m_currentResponseItem = nullptr; // 对应的聊天项
 };
 #endif // WIDGET_H

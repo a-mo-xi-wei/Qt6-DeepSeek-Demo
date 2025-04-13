@@ -8,6 +8,7 @@
 #include <qfontdatabase.h>
 #include <QPainter>
 #include <QPainterPath>
+#include <QScrollBar>
 
 #define GET_CURRENT_DIR (QString(__FILE__).first(qMax(QString(__FILE__).lastIndexOf('/'), QString(__FILE__).lastIndexOf('\\'))))
 
@@ -40,6 +41,7 @@ Widget::Widget(QWidget *parent)
 
         onStreamFinished();
     });
+
 }
 
 Widget::~Widget()
@@ -69,32 +71,44 @@ void Widget::on_send_btn_clicked() {
         qWarning() << "Empty question";
         return;
     }
-    //ui->send_btn->setEnabled(false);
-    //ui->send_btn->setCursor(Qt::ForbiddenCursor);
+    ui->send_btn->setEnabled(false);
+    ui->send_btn->setCursor(Qt::ForbiddenCursor);
+    // 自己
     auto pChatItem = new ChatItemBase(ChatRole::Self);
     pChatItem->setUserName("我");
     pChatItem->setUserIcon(getRoundedPixmap(QPixmap(GET_CURRENT_DIR + QStringLiteral("/me.jpg")),{50,50},25));
-    QWidget *pBubble = nullptr;
-    pBubble = new TextBubble(ChatRole::Self, question);
-    if(pBubble != nullptr)
-    {
-        pChatItem->setWidget(pBubble);
-        ui->chatView->appendChatItem(pChatItem);
-    }
+    auto pBubble = new TextBubble(ChatRole::Self, question);
+    pChatItem->setWidget(pBubble);
+    ui->chatView->appendChatItem(pChatItem);
+    // DeepSeek
+    // 创建回答气泡
+    m_currentResponseItem = new ChatItemBase(ChatRole::Other);
+    m_currentResponseItem->setUserName("DeepSeek");
+    m_currentResponseItem->setUserIcon(getRoundedPixmap(
+        QPixmap(GET_CURRENT_DIR + QStringLiteral("/deepseek.png")).scaled(50,50), {50,50}, 25));
+
+    m_currentResponseBubble = new TextBubble(ChatRole::Other, "");
+    m_currentResponseBubble->startStreaming(); // 启动流式
+    m_currentResponseItem->setWidget(m_currentResponseBubble);
+
+    ui->chatView->appendChatItem(m_currentResponseItem);
+
     // 发送请求
-    //m_deepSeek.send(question);
+    m_deepSeek.send(question);
     ui->question_textEdit->clear();
 }
 
 void Widget::getAnswer(const QString& chunk) {
-    m_pendingContent += chunk;
-    if (!m_streamUpdateTimer.isActive()) {
-        m_streamUpdateTimer.start();
+    if (m_currentResponseBubble) {
+        m_currentResponseBubble->appendStreamingContent(chunk); // 直接传递给气泡
     }
 }
 
 void Widget::onStreamFinished()
 {
-
-    qDebug()<<"回答完毕";
+    if (m_currentResponseBubble) {
+        m_currentResponseBubble->finishStreaming(); // 结束流式
+    }
+    ui->send_btn->setEnabled(true);
+    ui->send_btn->setCursor(Qt::PointingHandCursor);
 }

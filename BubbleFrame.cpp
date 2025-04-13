@@ -31,6 +31,7 @@ void BubbleFrame::setWidget(QWidget *w)
 void BubbleFrame::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);//消锯齿
     painter.setPen(Qt::NoPen);
 
     if(m_role == ChatRole::Other)
