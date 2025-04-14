@@ -19,12 +19,13 @@ protected:
     void paintEvent(QPaintEvent *e) override;
 
 protected://给子类继承
-    QString m_time;
+    QString m_time;//时间戳
 
 private:
     QHBoxLayout *m_pHLayout;
     ChatRole m_role;
     int m_margin;
+    QString m_createTime;
 };
 
 #endif // BUBBLE_H

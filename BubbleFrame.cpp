@@ -15,6 +15,7 @@ BubbleFrame::BubbleFrame(ChatRole role, const QString &time, QWidget *parent)
         m_pHLayout->setContentsMargins(m_margin, m_margin, WIDTH_SANJIAO + m_margin, m_margin);
     else
         m_pHLayout->setContentsMargins(WIDTH_SANJIAO + m_margin, m_margin, m_margin, m_margin);
+    m_createTime = QDateTime::currentDateTime().toString("MM/dd HH:mm");
 }
 
 void BubbleFrame::setWidget(QWidget *w)
@@ -78,8 +79,7 @@ void BubbleFrame::paintEvent(QPaintEvent *e)
 
         // 在控件矩形中央绘制时间文本
         this->setFixedWidth(150);
-        painter.drawText(this->rect(), QDateTime::currentDateTime().toString(""
-                                                                             "MM/dd HH:mm"), option);
+        painter.drawText(this->rect(),m_createTime , option);
     }
 
     return QFrame::paintEvent(e);

@@ -65,25 +65,38 @@ QPixmap Widget::getRoundedPixmap(const QPixmap &src, const QSize &size, const in
     return dest;
 }
 
-void Widget::dealMessageTime(QString curMsgTime) {
+void Widget::dealMessageTime(const QString& curMsgTime) {
     bool isShowTime = false;
-    auto count = ui->chatView->getLayout()->count();
-    qDebug()<<"count: "<<count;
-    if(count > 1) {
-        auto lastWidget = static_cast<TextBubble*>(ui->chatView->getLayout()->itemAt(count - 1)->widget());
-        int lastTime = lastWidget->time().toInt();
-        int curTime = curMsgTime.toInt();
-        //qDebug() << "curTime lastTime:" << curTime - lastTime;
-        isShowTime = (curTime - lastTime) > 5; // 两个消息相差一分钟
-        //        isShowTime = true;
-    } else {
-        isShowTime = true;
+    QLayout* layout = ui->chatView->getLayout();
+    int count = layout->count();
+    QWidget* lastWidget = nullptr;
+
+    // 反向遍历查找最后一个部件
+    for (int i = count - 1; i >= 0; --i) {
+        QLayoutItem* item = layout->itemAt(i);
+        if (item->widget()) {
+            lastWidget = item->widget();
+            break;
+        }
     }
-    if(isShowTime) {
+
+    if (lastWidget) {
+        auto textBubble = qobject_cast<TextBubble*>(lastWidget);
+        if (textBubble) {
+            int lastTime = textBubble->time().toInt();
+            int curTime = curMsgTime.toInt();
+            isShowTime = (curTime - lastTime) > 5; // 时间差判断
+        } else {
+            isShowTime = true; // 最后一项不是 TextBubble
+        }
+    } else {
+        isShowTime = true; // 无有效部件
+    }
+
+    if (isShowTime) {
         auto itemTime = new ChatItemBase(ChatRole::Time);
-        auto messageTime = new TextBubble(ChatRole::Time,"",curMsgTime,ui->chatView);
-        QSize size = QSize(this->width(), 40);
-        messageTime->resize(size);
+        auto messageTime = new TextBubble(ChatRole::Time, "", curMsgTime, ui->chatView);
+        messageTime->resize(this->width(), 40);
         itemTime->setWidget(messageTime);
         ui->chatView->appendChatItem(itemTime);
     }

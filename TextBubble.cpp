@@ -9,6 +9,8 @@
 TextBubble::TextBubble(const ChatRole role, const QString &text, const QString& time, QWidget *parent)
     : BubbleFrame(role,time, parent)
 {
+    this->m_time = time;
+
     m_pTextEdit = new QTextEdit();
     m_pTextEdit->setReadOnly(true);
     m_pTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

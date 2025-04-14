@@ -22,20 +22,20 @@ ChatView::ChatView(QWidget *parent)
     auto w = new QWidget(this);
     w->setObjectName("chat_bg");
     w->setAutoFillBackground(true);
-    auto pHLayout_1 = new QVBoxLayout();
-    pHLayout_1->addWidget(new QWidget(), 100000);
-    w->setLayout(pHLayout_1);
+    auto pVLayout_1 = new QVBoxLayout();
+    pVLayout_1->addStretch();
+    w->setLayout(pVLayout_1);
     m_pScrollArea->setWidget(w);    //应该时在QSCrollArea构造后执行 才对
 
     m_pScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     auto pVScrollBar = m_pScrollArea->verticalScrollBar();
     connect(pVScrollBar, &QScrollBar::rangeChanged,this, &ChatView::onVScrollBarMoved);
     //把垂直ScrollBar放到上边 而不是原来的并排
-    auto pHLayout_2 = new QHBoxLayout();
-    pHLayout_2->addWidget(pVScrollBar, 0, Qt::AlignRight);
-    pHLayout_2->setContentsMargins(0,0,0,0);
-    m_pScrollArea->setLayout(pHLayout_2);
-    pVScrollBar->setHidden(true);
+    //auto pHLayout_2 = new QHBoxLayout();
+    //pHLayout_2->addWidget(pVScrollBar, 0, Qt::AlignRight);
+    //pHLayout_2->setContentsMargins(0,0,0,0);
+    //m_pScrollArea->setLayout(pHLayout_2);
+    //pVScrollBar->setHidden(true);
 
     m_pScrollArea->setWidgetResizable(true);
     m_pScrollArea->installEventFilter(this);
